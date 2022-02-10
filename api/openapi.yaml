@@ -1,0 +1,213 @@
+openapi: 3.0.3
+info:
+  description: Mircoservice template with movie watchlist example
+  title: Microservice template
+  version: 1.0.0
+servers:
+- description: AWS deployment server
+  url: https://d01aws001.fts.d-3.de/microservicetemplate
+- url: http://localhost:8080/microservicetemplate
+paths:
+  /movies:
+    get:
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Movie'
+          description: movie response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      summary: Returns an movie
+      tags:
+      - Movie watchlist
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Movie'
+        description: Movie to storage
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Movie'
+          description: created movie response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      summary: Create a new movie
+      tags:
+      - Movie watchlist
+  /movies/{id}:
+    delete:
+      parameters:
+      - description: ID of movie
+        explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      responses:
+        "204":
+          description: movie deleted
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      summary: Delete an movie by ID
+      tags:
+      - Movie watchlist
+    get:
+      parameters:
+      - description: ID of movie
+        explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Movie'
+          description: movie response
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      summary: Returns an movie by ID
+      tags:
+      - Movie watchlist
+    put:
+      parameters:
+      - description: ID of movie
+        explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Movie'
+        description: Updated movie
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Movie'
+          description: successful updated movie
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: unexpected error
+      summary: Update an movie by ID
+      tags:
+      - Movie watchlist
+components:
+  parameters:
+    MovieId:
+      description: ID of movie
+      explode: false
+      in: path
+      name: id
+      required: true
+      schema:
+        format: uuid
+        type: string
+      style: simple
+  schemas:
+    Movie:
+      example:
+        actors:
+        - actors
+        - actors
+        director: director
+        name: name
+        genre: genre
+        description: description
+        posterUri: posterUri
+        id: id
+        type: type
+        oscars: 0
+      properties:
+        id:
+          description: Id of the movie
+          type: string
+        name:
+          description: Title of the movie
+          type: string
+        genre:
+          description: Genre of the movie
+          type: string
+        director:
+          description: Director of the movie
+          type: string
+        actors:
+          items:
+            type: string
+          type: array
+        description:
+          description: Description of the movie
+          type: string
+        type:
+          description: Type of the movie
+          type: string
+        posterUri:
+          description: Poster-Uri of the movie
+          type: string
+        oscars:
+          description: Number of oscars
+          type: integer
+      required:
+      - actors
+      - description
+      - director
+      - genre
+      - id
+      - name
+      - type
+      type: object
+    Error:
+      properties:
+        code:
+          description: Error code
+          format: int32
+          type: integer
+        message:
+          description: Error message
+          type: string
+      required:
+      - code
+      - message
